@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -91,7 +92,7 @@ namespace Polyglot.Editor
                         for (var v = 0; v < idCount; ++v)
                         {
                             var valueProperty = valuesProperty.GetArrayElementAtIndex(v);
-                            valueProperty.stringValue = split[v + 1];
+                            valueProperty.stringValue = Regex.Unescape(split[v + 1]);
                         }
 
                         ++counter;
