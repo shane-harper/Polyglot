@@ -18,6 +18,9 @@ namespace Polyglot
         /// <inheritdoc />
         public override void RefreshLocalization()
         {
+            // Do not update if key is not set
+            if (string.IsNullOrEmpty(Key)) return;
+
             AudioClip clip;
             if (!LocalizationManager.GetAudioClip(Key, out clip)) return;
             Target.clip = clip;

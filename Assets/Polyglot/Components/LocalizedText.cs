@@ -26,10 +26,12 @@ namespace Polyglot
         public override void RefreshLocalization()
         {
             string value;
-            if (LocalizationManager.GetString(Key, out value))
+
+            // Do not update if key is not set
+            if (!string.IsNullOrEmpty(Key) && LocalizationManager.GetString(Key, out value))
                 Target.text = value;
 
-            if (_allowFontOverride)
+            if (_allowFontOverride && Target.font != null)
             {
                 // Check for replacement font and override
                 Font font;

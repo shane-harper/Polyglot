@@ -19,8 +19,10 @@ namespace Polyglot
         /// <inheritdoc />
         public override void RefreshLocalization()
         {
-            Sprite sprite;
+            // Do not update if key is not set
+            if (!string.IsNullOrEmpty(Key)) return;
 
+            Sprite sprite;
             if (LocalizationManager.GetSprite(Key, out sprite))
                 Target.sprite = sprite;
         }
