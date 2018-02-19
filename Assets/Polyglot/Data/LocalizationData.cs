@@ -82,7 +82,7 @@ namespace Polyglot
             for (var i = 0; i < count; ++i)
             {
                 var entry = array[i];
-                var value = entry.Values.Length > i ? entry.Values[index] : default(T2);
+                var value = index >= entry.Values.Length ? default(T2) : entry.Values[index];
                 dictionary[entry.Key] = value;
             }
 
