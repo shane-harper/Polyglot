@@ -19,6 +19,12 @@ Features
 - Preview localization in editor
 - Saving last setting between sessions (PlayerPrefs)
 
+Known Issues
+--------
+- CSV import/export needs re-writing
+    - Does not support double quotes
+    - Does not support new line characters (use '\n')
+
 Installation
 ------------
 

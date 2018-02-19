@@ -4,6 +4,7 @@
 //  
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -59,8 +60,10 @@ namespace Polyglot.Editor
                 if (line != null)
                 {
                     // Read headers
-                    var split = line.Split(',');
-                    var idCount = split.Length - 1;
+                    var split = new List<string>();
+                    ParseLine(line, split);
+
+                    var idCount = split.Count - 1;
                     var ids = serializedObject.FindProperty("_names");
                     ids.arraySize = idCount;
                     for (var i = 0; i < idCount; ++i)
@@ -78,7 +81,7 @@ namespace Polyglot.Editor
                         if (string.IsNullOrEmpty(line)) continue;
 
                         // Split line and create entry
-                        split = line.Split(',');
+                        ParseLine(line, split);
                         strings.InsertArrayElementAtIndex(counter);
                         var entry = strings.GetArrayElementAtIndex(counter);
 
@@ -148,8 +151,8 @@ namespace Polyglot.Editor
                     builder.Append("Key,");
                     for (var h = 0; h < idCount; ++h)
                     {
-                        builder.Append(ids.GetArrayElementAtIndex(h).stringValue);
-                        if (h + 1 < idCount) builder.Append(",");
+                        builder.AppendFormat("\"{0}\"", ids.GetArrayElementAtIndex(h).stringValue);
+                        if (h + 1 < idCount) builder.Append(Characters.Separator);
                     }
                     file.WriteLine(builder.ToString());
                     builder.Length = 0;
@@ -159,16 +162,16 @@ namespace Polyglot.Editor
                     {
                         // Add key
                         var entry = strings.GetArrayElementAtIndex(k);
-                        builder.Append(entry.FindPropertyRelative("_key").stringValue);
-                        builder.Append(",");
+                        builder.AppendFormat("\"{0}\"", entry.FindPropertyRelative("_key").stringValue);
+                        builder.Append(Characters.Separator);
 
                         // Add all keys
                         var values = entry.FindPropertyRelative("_values");
                         var valueCount = values.arraySize;
                         for (var v = 0; v < valueCount; ++v)
                         {
-                            builder.Append(values.GetArrayElementAtIndex(v).stringValue);
-                            builder.Append(",");
+                            builder.AppendFormat("\"{0}\"", values.GetArrayElementAtIndex(v).stringValue);
+                            builder.Append(Characters.Separator);
                         }
 
                         // Remove last comma and add to lines list
@@ -188,6 +191,64 @@ namespace Polyglot.Editor
 
             Debug.Log("Localization: Export complete");
             return true;
+        }
+
+        private static class Characters
+        {
+            public const char Separator = ',';
+            public const char QuotationMark = '\"';
+        }
+
+        private static void ParseLine(string line, List<string> list)
+        {
+            list.Clear();
+            var lineLength = line.Length;
+
+            int start = 0;
+            var isQuote = false;
+
+            int head;
+            for (head = start; head < lineLength; ++head)
+            {
+                // Get character at head
+                var character = line[head];
+
+                if (isQuote)
+                {
+                    // Wait for next quotation mark
+                    if (character == Characters.QuotationMark) isQuote = false;
+                }
+                else
+                {
+                    switch (character)
+                    {
+                        case Characters.Separator:
+                            // End of value, add to list
+                            list.Add(ReadValue(line, start, head));
+                            start = head + 1;
+                            break;
+                        case Characters.QuotationMark:
+                            // Start new value
+                            isQuote = true;
+                            break;
+                    }
+                }
+            }
+
+            // Read last value (if line is not terminated with comma)
+            if (head > start) list.Add(ReadValue(line, start, head));
+        }
+
+        private static string ReadValue(string line, int start, int end)
+        {
+            var text = line.Substring(start, end - start);
+
+            // Remove quotation marks from start and end of string
+            if (text.Length > 1 && text[0] == Characters.QuotationMark
+                && text[text.Length - 1] == Characters.QuotationMark)
+                text = text.Substring(1, text.Length - 2);
+
+            return text;
         }
     }
 }
