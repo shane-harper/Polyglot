@@ -91,6 +91,12 @@ namespace Polyglot
         /// <returns>Returns false if key was not found</returns>
         public static bool GetString(string key, out string value)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                value = key;
+                return false;
+            }
+            
             if (IsInitialized || SetLocalization(-1)) return _strings.TryGetValue(key, out value);
             value = string.Empty;
             return false;
@@ -102,6 +108,12 @@ namespace Polyglot
         /// <returns>Returns false if key was not found</returns>
         public static bool GetSprite(string key, out Sprite sprite)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                sprite = null;
+                return false;
+            }
+
             if (IsInitialized || SetLocalization(-1)) return _sprites.TryGetValue(key, out sprite);
             sprite = null;
             return false;
@@ -113,6 +125,12 @@ namespace Polyglot
         /// <returns>Returns false if key was not found</returns>
         public static bool GetAudioClip(string key, out AudioClip clip)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                clip = null;
+                return false;
+            }
+
             if (IsInitialized || SetLocalization(-1)) return _sounds.TryGetValue(key, out clip);
             clip = null;
             return false;
@@ -124,6 +142,12 @@ namespace Polyglot
         /// <returns>Returns false if key was not found</returns>
         public static bool GetFont(Font original, out Font font)
         {
+            if (original == null)
+            {
+                font = original;
+                return false;
+            }
+            
             if (IsInitialized || SetLocalization(-1)) return _fonts.TryGetValue(original, out font);
             font = null;
             return false;
