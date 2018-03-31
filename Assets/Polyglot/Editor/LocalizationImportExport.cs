@@ -4,8 +4,8 @@
 //  
 
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -60,14 +60,13 @@ namespace Polyglot.Editor
                 if (line != null)
                 {
                     // Read headers
-                    var split = new List<string>();
-                    ParseLine(line, split);
+                    var headers = ParseLine(line);
 
-                    var idCount = split.Count - 1;
+                    var idCount = headers.Length - 1;
                     var ids = serializedObject.FindProperty("_names");
                     ids.arraySize = idCount;
                     for (var i = 0; i < idCount; ++i)
-                        ids.GetArrayElementAtIndex(i).stringValue = split[i + 1];
+                        ids.GetArrayElementAtIndex(i).stringValue = headers[i + 1];
 
                     // Clear existing string localizations
                     var strings = serializedObject.FindProperty("_strings");
@@ -81,7 +80,7 @@ namespace Polyglot.Editor
                         if (string.IsNullOrEmpty(line)) continue;
 
                         // Split line and create entry
-                        ParseLine(line, split);
+                        var split = ParseLine(line);
                         strings.InsertArrayElementAtIndex(counter);
                         var entry = strings.GetArrayElementAtIndex(counter);
 
@@ -198,57 +197,12 @@ namespace Polyglot.Editor
             public const char Separator = ',';
             public const char QuotationMark = '\"';
         }
-
-        private static void ParseLine(string line, List<string> list)
+        
+        private static string[] ParseLine(string line)
         {
-            list.Clear();
-            var lineLength = line.Length;
-
-            int start = 0;
-            var isQuote = false;
-
-            int head;
-            for (head = start; head < lineLength; ++head)
-            {
-                // Get character at head
-                var character = line[head];
-
-                if (isQuote)
-                {
-                    // Wait for next quotation mark
-                    if (character == Characters.QuotationMark) isQuote = false;
-                }
-                else
-                {
-                    switch (character)
-                    {
-                        case Characters.Separator:
-                            // End of value, add to list
-                            list.Add(ReadValue(line, start, head));
-                            start = head + 1;
-                            break;
-                        case Characters.QuotationMark:
-                            // Start new value
-                            isQuote = true;
-                            break;
-                    }
-                }
-            }
-
-            // Read last value (if line is not terminated with comma)
-            if (head > start) list.Add(ReadValue(line, start, head));
-        }
-
-        private static string ReadValue(string line, int start, int end)
-        {
-            var text = line.Substring(start, end - start);
-
-            // Remove quotation marks from start and end of string
-            if (text.Length > 1 && text[0] == Characters.QuotationMark
-                && text[text.Length - 1] == Characters.QuotationMark)
-                text = text.Substring(1, text.Length - 2);
-
-            return text;
+            const string pattern = @"(((?<x>(?=[,\r\n]+))|""(?<x>([^""]|"""")+)""|(?<x>[^,\r\n]+)),?)"; 
+            return (from Match m in Regex.Matches(line, pattern, RegexOptions.ExplicitCapture) 
+                select m.Groups[1].Value).ToArray();
         }
     }
 }
