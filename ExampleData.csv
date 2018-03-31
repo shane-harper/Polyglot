@@ -1,3 +1,4 @@
-Key,English,German,Spanish
-Hello,Hello,Hallo,"Hola"
-Goodbye,Goodbye,Auf Wiedersehen,"Adiós"
+Key,English,German,
+Hello,Hello,Hallo,
+Goodbye,Goodbye,Auf Wiedersehen
+MyName,"Hi, my name is {0}","Hi, mein Name ist {0}"

@@ -15,18 +15,19 @@ MonoBehaviour:
   _names:
   - English
   - German
-  - Spanish
   _strings:
   - _key: Hello
     _values:
     - Hello
     - Hallo
-    - Hola
   - _key: Goodbye
     _values:
     - Goodbye
     - Auf Wiedersehen
-    - "Adi\xF3s"
+  - _key: MyName
+    _values:
+    - Hi, my name is {0}
+    - Hi, mein Name ist {0}
   _sprites:
   - _key: Hello
     _values:
