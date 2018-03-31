@@ -15,6 +15,17 @@ namespace Polyglot
     [AddComponentMenu("Localization/Localized Audio Source")]
     public sealed class LocalizedAudioSource : KeyedLocalizedComponent<AudioSource>
     {
+        #region Inspector
+
+        [SerializeField, LocalizationKey(LocalizationData.Type.Sound)] private string _key;
+    
+        #endregion
+        
+        protected override string Key
+        {
+            get { return _key; }
+        }
+        
         /// <inheritdoc />
         public override void RefreshLocalization()
         {

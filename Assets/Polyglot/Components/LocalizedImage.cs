@@ -16,6 +16,17 @@ namespace Polyglot
     [AddComponentMenu("Localization/Localized Image")]
     public sealed class LocalizedImage : KeyedLocalizedComponent<Image>
     {
+        #region Inspector
+
+        [SerializeField, LocalizationKey(LocalizationData.Type.Sprite)] private string _key;
+
+        #endregion
+        
+        protected override string Key
+        {
+            get { return _key; }
+        }
+        
         /// <inheritdoc />
         public override void RefreshLocalization() 
         {

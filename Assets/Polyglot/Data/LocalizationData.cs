@@ -13,6 +13,14 @@ namespace Polyglot
     /// </summary>
     public sealed class LocalizationData : ScriptableObject
     {
+        public enum Type
+        {
+            String,
+            Sprite,
+            Sound,
+            Font
+        }
+        
         /// <summary>
         ///     Returns the number of localizations
         /// </summary>

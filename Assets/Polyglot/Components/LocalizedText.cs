@@ -18,9 +18,15 @@ namespace Polyglot
     {
         #region Inspector
 
+        [SerializeField, LocalizationKey(LocalizationData.Type.String)] private string _key;
         [SerializeField] private bool _allowFontOverride = true;
 
         #endregion
+
+        protected override string Key
+        {
+            get { return _key; }
+        }
 
         /// <inheritdoc />
         public override void RefreshLocalization()

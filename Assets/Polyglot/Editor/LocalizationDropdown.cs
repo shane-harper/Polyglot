@@ -10,14 +10,12 @@ namespace Polyglot.Editor
 {
     internal abstract class BaseLocalizationDropdown
     {
-        protected readonly GUIContent Label;
         protected readonly SerializedProperty Source;
         protected GUIContent[] NameList;
 
-        protected BaseLocalizationDropdown(GUIContent label, SerializedProperty source)
+        protected BaseLocalizationDropdown(SerializedProperty source)
         {
             Source = source;
-            Label = label;
         }
 
         /// <summary>
@@ -41,9 +39,14 @@ namespace Polyglot.Editor
         ///     Draw with an integer
         /// </summary>
         /// <returns>Returns new value</returns>
-        public int Draw(int selectedIndex)
+        public int Draw(GUIContent label, int selectedIndex)
         {
-            return EditorGUILayout.Popup(Label, selectedIndex, NameList);
+            return EditorGUILayout.Popup(label, selectedIndex, NameList);
+        }
+        
+        public int Draw(Rect position, GUIContent label, int selectedIndex)
+        {
+            return EditorGUI.Popup(position, label, selectedIndex, NameList);
         }
 
         /// <summary>
@@ -52,8 +55,17 @@ namespace Polyglot.Editor
         /// <returns>Returns true if the value changed</returns>
         public bool Draw(SerializedProperty property)
         {
+            return Draw(new GUIContent(property.displayName), property);
+        }
+        
+        /// <summary>
+        ///     Draw with a serialized property
+        /// </summary>
+        /// <returns>Returns true if the value changed</returns>
+        public bool Draw(GUIContent label, SerializedProperty property)
+        {
             var value = property.intValue;
-            var newValue = Draw(value);
+            var newValue = Draw(label, value);
 
             if (value == newValue) return false;
             property.intValue = newValue;
@@ -71,7 +83,7 @@ namespace Polyglot.Editor
     /// </summary>
     internal sealed class LocalizationDropdown : BaseLocalizationDropdown
     {
-        public LocalizationDropdown(GUIContent label, SerializedProperty nameSource) : base(label, nameSource)
+        public LocalizationDropdown(SerializedProperty nameSource) : base(nameSource)
         {
             RefreshList();
         }
@@ -91,7 +103,7 @@ namespace Polyglot.Editor
     /// </summary>
     internal sealed class LocalizationKeyDropdown : BaseLocalizationDropdown
     {
-        public LocalizationKeyDropdown(GUIContent label, SerializedProperty source) : base(label, source)
+        public LocalizationKeyDropdown(SerializedProperty source) : base(source)
         {
             RefreshList();
         }

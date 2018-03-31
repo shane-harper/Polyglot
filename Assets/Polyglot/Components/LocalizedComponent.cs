@@ -12,7 +12,7 @@ namespace Polyglot
     /// </summary>
     public abstract class LocalizedComponent : MonoBehaviour
     {
-        protected virtual void Start()
+        private void Start()
         {
             RefreshLocalization();
         }
@@ -33,10 +33,7 @@ namespace Polyglot
     /// </summary>
     public abstract class KeyedLocalizedComponent<T> : LocalizedComponent where T : Component
     {
-        protected string Key
-        {
-            get { return _key; }
-        }
+        protected abstract string Key { get; }
 
         protected T Target
         {
@@ -51,7 +48,6 @@ namespace Polyglot
 
         #region Inspector
 
-        [SerializeField] private string _key;
         [SerializeField] private T _target;
 
         #endregion

@@ -27,10 +27,7 @@ namespace Polyglot.Editor.Tabs
             _names = _editor.serializedObject.FindProperty("_names");
             _defaultLocalization = _editor.serializedObject.FindProperty("_defaultLocalization");
 
-            // Initialize default localization dropdown
-            var label = new GUIContent("Default Localization",
-                "Localization that will be used if no localization is set");
-            _localizationDropdown = new LocalizationDropdown(label, _names);
+            _localizationDropdown = new LocalizationDropdown(_names);
         }
 
         /// <inheritdoc />
@@ -72,8 +69,12 @@ namespace Polyglot.Editor.Tabs
         /// <inheritdoc />
         public void DrawFooter()
         {
+            // Initialize default localization dropdown
+            var label = new GUIContent("Default Localization",
+                "Localization that will be used if no localization is set");
+            
             // Draw default localization dropdown
-            if (_names.arraySize > 0 && _localizationDropdown.Draw(_defaultLocalization))
+            if (_names.arraySize > 0 && _localizationDropdown.Draw(label, _defaultLocalization))
                 _editor.Save();
 
             // Draw import/export buttons
