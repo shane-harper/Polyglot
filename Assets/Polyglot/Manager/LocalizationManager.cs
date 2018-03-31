@@ -17,7 +17,7 @@ namespace Polyglot
         public delegate void LocalizationChangeHandler(int index);
 
         private const string LastLocalizationPref = "Localization_LastLocalization";
-        public const string ResourcePath = "Localization/LocalizationData";
+        public const string ResourcePath = "Polyglot/LocalizationData";
 
         private static Dictionary<string, Sprite> _sprites;
         private static Dictionary<string, string> _strings;

@@ -13,7 +13,7 @@ namespace Polyglot
     /// </summary>
     [ExecuteInEditMode]
     [RequireComponent(typeof(Image))]
-    [AddComponentMenu("Localization/Localized Image")]
+    [AddComponentMenu("Polyglot/Localized Image")]
     public sealed class LocalizedImage : KeyedLocalizedComponent<Image>
     {
         #region Inspector

@@ -12,7 +12,7 @@ namespace Polyglot
     /// </summary>
     [ExecuteInEditMode]
     [RequireComponent(typeof(AudioSource))]
-    [AddComponentMenu("Localization/Localized Audio Source")]
+    [AddComponentMenu("Polyglot/Localized Audio Source")]
     public sealed class LocalizedAudioSource : KeyedLocalizedComponent<AudioSource>
     {
         #region Inspector

@@ -11,7 +11,7 @@ namespace Polyglot
     ///     Tool to toggle a GameObject on/off depending on the selected localization
     /// </summary>
     [ExecuteInEditMode]
-    [AddComponentMenu("Localization/Localized Toggle (GameObject)")]
+    [AddComponentMenu("Polyglot/Localized Toggle (GameObject)")]
     public sealed class LocalizedToggleGameObject : LocalizedToggle<GameObject>
     {
         protected override void ToggleObject(bool enable)

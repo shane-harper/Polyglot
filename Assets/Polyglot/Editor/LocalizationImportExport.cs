@@ -36,7 +36,7 @@ namespace Polyglot.Editor
         ///     Import localization from file
         /// </summary>
         /// <returns>Returns true if read is successful</returns>
-        [MenuItem("Tools/Localization/Import Data")]
+        [MenuItem("Tools/Polyglot/Import Data")]
         public static bool ImportData()
         {
             // Get file to import
@@ -115,7 +115,7 @@ namespace Polyglot.Editor
         ///     Export localization data to file
         /// </summary>
         /// <returns>Returns true if write is successful</returns>
-        [MenuItem("Tools/Localization/Export Data")]
+        [MenuItem("Tools/Polyglot/Export Data")]
         public static bool ExportData()
         {
             // Get export path

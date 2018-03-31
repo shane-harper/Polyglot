@@ -13,7 +13,7 @@ namespace Polyglot
     /// </summary>
     [ExecuteInEditMode]
     [RequireComponent(typeof(Text))]
-    [AddComponentMenu("Localization/Localized Text")]
+    [AddComponentMenu("Polyglot/Localized Text")]
     public sealed class LocalizedText : KeyedLocalizedComponent<Text>
     {
         #region Inspector

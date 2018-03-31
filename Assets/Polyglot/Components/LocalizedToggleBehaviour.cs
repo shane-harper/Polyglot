@@ -11,7 +11,7 @@ namespace Polyglot
     ///     Tool to toggle a Behaviour on/off depending on the selected localization
     /// </summary>
     [ExecuteInEditMode]
-    [AddComponentMenu("Localization/Localized Toggle (Behaviour)")]
+    [AddComponentMenu("Polyglot/Localized Toggle (Behaviour)")]
     public sealed class LocalizedToggleBehaviour : LocalizedToggle<Behaviour>
     {
         protected override void ToggleObject(bool enable)
