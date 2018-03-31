@@ -144,7 +144,7 @@ namespace Polyglot
         {
             if (original == null)
             {
-                font = original;
+                font = null;
                 return false;
             }
             
