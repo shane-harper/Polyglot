@@ -3,6 +3,7 @@
 // Licensed under the MIT. See LICENSE file full license information.  
 //  
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -104,8 +105,21 @@ namespace Polyglot
         /// <summary>
         ///     Get localized string for the loaded localization
         /// </summary>
+        public static string GetString(string key)
+        {
+            if (string.IsNullOrEmpty(key)) 
+                throw new ArgumentNullException("key", "Polyglot: Failed to get string. Key is null");
+
+            string value;
+            if (_strings.TryGetValue(key, out value)) return value;
+            throw new KeyNotFoundException("Polyglot: Failed to get string. No entry found with key " + key);
+        }
+        
+        /// <summary>
+        ///     Get localized string for the loaded localization
+        /// </summary>
         /// <returns>Returns false if key was not found</returns>
-        public static bool GetString(string key, out string value)
+        public static bool TryGetString(string key, out string value)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -119,12 +133,25 @@ namespace Polyglot
             value = string.Empty;
             return false;
         }
+        
+        /// <summary>
+        ///     Get localized sprite for the loaded localization
+        /// </summary>
+        public static Sprite GetSprite(string key)
+        {
+            if (string.IsNullOrEmpty(key)) 
+                throw new ArgumentNullException("key", "Polyglot: Failed to get sprite. Key is null");
 
+            Sprite value;
+            if (_sprites.TryGetValue(key, out value)) return value;
+            throw new KeyNotFoundException("Polyglot: Failed to get sprite. No entry found with key " + key);
+        }
+        
         /// <summary>
         ///     Get localized Sprite for the loaded localization
         /// </summary>
         /// <returns>Returns false if key was not found</returns>
-        public static bool GetSprite(string key, out Sprite sprite)
+        public static bool TryGetSprite(string key, out Sprite sprite)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -138,12 +165,25 @@ namespace Polyglot
             sprite = null;
             return false;
         }
+        
+        /// <summary>
+        ///     Get localized AudioClip for the loaded localization
+        /// </summary>
+        public static AudioClip GetAudioClip(string key)
+        {
+            if (string.IsNullOrEmpty(key)) 
+                throw new ArgumentNullException("key", "Polyglot: Failed to get audio clip. Key is null");
+
+            AudioClip value;
+            if (_sounds.TryGetValue(key, out value)) return value;
+            throw new KeyNotFoundException("Polyglot: Failed to get audio clip. No entry found with key " + key);
+        }
 
         /// <summary>
         ///     Get localized AudioClip for the loaded localization
         /// </summary>
         /// <returns>Returns false if key was not found</returns>
-        public static bool GetAudioClip(string key, out AudioClip clip)
+        public static bool TryGetAudioClip(string key, out AudioClip clip)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -157,12 +197,25 @@ namespace Polyglot
             clip = null;
             return false;
         }
+        
+        /// <summary>
+        ///     Get localized Font for the loaded localization
+        /// </summary>
+        public static Font GetFont(Font original)
+        {
+            if (original == null) 
+                throw new ArgumentNullException("original", "Polyglot: Failed to get font. Key is null");
+
+            Font value;
+            if (_fonts.TryGetValue(original, out value)) return value;
+            throw new KeyNotFoundException("Polyglot: Failed to get audio clip. No entry found with key " + original);
+        }
 
         /// <summary>
         ///     Get override Font for the loaded localization
         /// </summary>
         /// <returns>Returns false if key was not found</returns>
-        public static bool GetFont(Font original, out Font font)
+        public static bool TryGetFont(Font original, out Font font)
         {
             if (original == null)
             {

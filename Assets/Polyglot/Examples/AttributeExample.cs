@@ -31,7 +31,7 @@ public class AttributeExample : MonoBehaviour
         string format;
 
         // Try to get the string from the localization manager
-        if (LocalizationManager.GetString(_key, out format))
+        if (LocalizationManager.TryGetString(_key, out format))
             _display.text = string.Format(format, _name);
         else
             _display.text = string.Format("Could not find key {0}", _key);

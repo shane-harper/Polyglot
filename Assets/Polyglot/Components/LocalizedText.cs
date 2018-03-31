@@ -34,14 +34,14 @@ namespace Polyglot
             string value;
 
             // Do not update if key is not set
-            if (!string.IsNullOrEmpty(Key) && LocalizationManager.GetString(Key, out value))
+            if (!string.IsNullOrEmpty(Key) && LocalizationManager.TryGetString(Key, out value))
                 Target.text = value;
 
             if (_allowFontOverride && Target.font != null)
             {
                 // Check for replacement font and override
                 Font font;
-                if (LocalizationManager.GetFont(Target.font, out font) && font != null)
+                if (LocalizationManager.TryGetFont(Target.font, out font) && font != null)
                     Target.font = font;
             }
         }

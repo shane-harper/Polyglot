@@ -34,7 +34,7 @@ namespace Polyglot
             if (string.IsNullOrEmpty(Key)) return;
 
             Sprite sprite;
-            if (LocalizationManager.GetSprite(Key, out sprite))
+            if (LocalizationManager.TryGetSprite(Key, out sprite))
                 Target.sprite = sprite;
         }
     }

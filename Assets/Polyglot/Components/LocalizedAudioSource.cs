@@ -33,7 +33,7 @@ namespace Polyglot
             if (string.IsNullOrEmpty(Key)) return;
 
             AudioClip clip;
-            if (!LocalizationManager.GetAudioClip(Key, out clip)) return;
+            if (!LocalizationManager.TryGetAudioClip(Key, out clip)) return;
             Target.clip = clip;
 
             // Re-play audio source with new AudioClip
