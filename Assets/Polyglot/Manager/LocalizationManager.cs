@@ -48,7 +48,17 @@ namespace Polyglot
         {
             // Load data
             var data = Resources.Load<LocalizationData>(ResourcePath);
-            if (data == null || data.Length <= 0) return false;
+            if (data == null)
+            {
+                Debug.LogErrorFormat("Polyglot: Failed to set Localization. Could not find localization data resource at {0}", ResourcePath);
+                return false;
+            }
+            
+            if (data.Length <= 0)
+            {
+                Debug.LogError("Polyglot: Failed to set Localization. Localization data is empty");
+                return false;
+            }
 
             // Ensure index is in range and save setting
             index = ValidateIndex(data, index);
@@ -75,12 +85,18 @@ namespace Polyglot
             // If index is out of range, try and load previous setting
             if (index < 0 || index >= data.Length)
             {
+                if (index >= data.Length)
+                    Debug.LogErrorFormat("Polyglot: Requested localization {0} is out of range.", index);
+                
                 // Load previous setting
                 index = PlayerPrefs.GetInt(LastLocalizationPref, data.DefaultLocalization);
 
                 // Check that too as it may no longer exist
                 if (index < 0 || index >= data.Length)
+                {
+                    Debug.LogWarning("Polyglot: Saved localization index is out of range");
                     index = Mathf.Clamp(data.DefaultLocalization, 0, data.Length);
+                }
             }
             return index;
         }
@@ -93,11 +109,13 @@ namespace Polyglot
         {
             if (string.IsNullOrEmpty(key))
             {
-                value = key;
+                Debug.LogError("Polyglot: Failed to get string. Key is null");
+                value = string.Empty;
                 return false;
             }
             
             if (IsInitialized || SetLocalization(-1)) return _strings.TryGetValue(key, out value);
+            Debug.LogErrorFormat("Polyglot: Failed to get string. No entry found with key {0}", key);
             value = string.Empty;
             return false;
         }
@@ -110,11 +128,13 @@ namespace Polyglot
         {
             if (string.IsNullOrEmpty(key))
             {
+                Debug.LogError("Polyglot: Failed to get sprite. Key is null");
                 sprite = null;
                 return false;
             }
 
             if (IsInitialized || SetLocalization(-1)) return _sprites.TryGetValue(key, out sprite);
+            Debug.LogErrorFormat("Polyglot: Failed to get sprite. No entry found with key {0}", key);
             sprite = null;
             return false;
         }
@@ -127,11 +147,13 @@ namespace Polyglot
         {
             if (string.IsNullOrEmpty(key))
             {
+                Debug.LogError("Polyglot: Failed to get audio clip. Key is null");
                 clip = null;
                 return false;
             }
 
             if (IsInitialized || SetLocalization(-1)) return _sounds.TryGetValue(key, out clip);
+            Debug.LogErrorFormat("Polyglot: Failed to get audio clip. No entry found with key {0}", key);
             clip = null;
             return false;
         }
@@ -144,11 +166,13 @@ namespace Polyglot
         {
             if (original == null)
             {
+                Debug.LogError("Polyglot: Failed to get font. Key is null");
                 font = null;
                 return false;
             }
             
             if (IsInitialized || SetLocalization(-1)) return _fonts.TryGetValue(original, out font);
+            Debug.LogErrorFormat("Polyglot: Failed to get font. No entry found with key {0}", original);
             font = null;
             return false;
         }
