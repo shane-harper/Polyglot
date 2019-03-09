@@ -1,0 +1,29 @@
+ManifestFileVersion: 0
+CRC: 3908058265
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: aa398502d2878e1aaf67ccc392020515
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: c1a8889ca9928699c8ce0ca04dd9b64b
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11500000, guid: a38e9583b1edc9340994e503282d1921, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5c356dec4d5a423daa498167676f5c89, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- "Assets/Polyglot/Languages/Espa\xF1ol.asset"
+- "Assets/Polyglot/Languages/Portugu\xEAs.asset"
+- Assets/Polyglot/Languages/Italiano.asset
+- "Assets/Polyglot/Languages/\uD55C\uAD6D\uC5B4.asset"
+- Assets/Polyglot/Languages/English.asset
+- "Assets/Polyglot/Languages/\u65E5\u672C\u8A9E.asset"
+- Assets/Polyglot/Languages/PolyglotKeys.asset
+- Assets/Polyglot/Languages/Deutsch.asset
+- "Assets/Polyglot/Languages/Fran\xE7ais.asset"
+- "Assets/Polyglot/Languages/P\u0443\u0441\u0441\u043A\u0438\u0439.asset"
+Dependencies: []

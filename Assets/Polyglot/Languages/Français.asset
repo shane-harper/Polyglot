@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c356dec4d5a423daa498167676f5c89, type: 3}
+  m_Name: "Fran\xE7ais"
+  m_EditorClassIdentifier: 
+  _strings:
+  - "Polyglot: Fran\xE7ais"
+  - "Voici un exemple de sc\xE8ne montrant certaines des fonctionnalit\xE9s de Polyglot.
+    J'ai traduit cela en utilisant un traducteur en ligne, veuillez excuser les mauvaises
+    traductions."
+  - Quitter

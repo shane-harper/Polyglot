@@ -1,26 +1,23 @@
-Polyglot - Localization Plugin for Unity3D
+Polyglot2 - Localization Plugin for Unity3D
 ===============================
 
-A simple localization plugin for Unity3D
+A simple localization plugin for Unity3D. 
+
+This is a rewrite based on my findings from using the previous version on 2 projects. Some features have been removed, such as sprite localization and font switching. These features may be re-added in the future.
 
 Features
 --------
 
-- Easily expandible object replacement
-    - Strings
-    - Sprites
-    - AudioClips
-    - Fonts
-- GameObject/Behaviour toggling
-- CSV import/export
+- Easily expandible string replacement
+- GameObject toggling
+- CSV import (tested with Google Sheets)
 - Default localization selection
-- Editor window with summary
-    - Includes missing keys value warnings
 - Preview localization in editor
-- Saving last setting between sessions (PlayerPrefs)
+- Saving of last setting between sessions (PlayerPrefs)
 
 Known Issues
 --------
+
 - CSV import/export needs re-writing
     - Does not support double quotes
     - Does not support new line characters (use '\n')
@@ -33,12 +30,12 @@ Copy the Polyglot folder to your project
 Usage
 ------------
 
-1. Add localizations using Localization window (Window/Localization)
-2. Export CSV template and import into Excel
-3. Add string localizations
-4. Re-import CSV from Excel into Unity
-5. Add localization components where required (Component/Localization/...)
-6. Preview in editor through the Localization window or set localization in app by calling LocalizationManager.SetLocalization
+1. Create spreadsheet with localizations [Example](https://docs.google.com/spreadsheets/d/11xmSz3hNe-OQJxhZhs9ZoPOMK4_uK8ZMT6geqyczJtA/edit?usp=sharing)
+2. Export localization CSV
+3. Import CSV to project in Unity (Edit > Polyglot > Import Data...)
+4. Set default localizations in Polyglot settings (Edit > Polyglot > Show Settings)
+5. Rebuild streaming assets (Edit > Polyglot > Build Streaming Assets)
+6. Initialize Polyglot on app start. `Polyglot.LocManager.Initialize();`
 
 Contributors
 ------------
