@@ -4,6 +4,7 @@
 //  
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Polyglot.Data;
 using UnityEngine;
@@ -35,7 +36,6 @@ namespace Polyglot
 
         private static bool _isInitialized;
         private static int _loadedLoc = -1;
-        private static LocSettings _settings;
 
         private static Dictionary<string, string> _strings;
 
@@ -57,65 +57,60 @@ namespace Polyglot
         {
             if (_isInitialized) return;
 
-            _settings = Resources.Load<LocSettings>(SettingsName);
             var index = PlayerPrefs.GetInt(LastLocPrefKey, -1);
             SetLocalization(index);
         }
 
         public static void SetLocalization(int index)
         {
-            if (_settings == null) _settings = Resources.Load<LocSettings>(SettingsName);
-            
-            // Load asset bundle
-            var path = string.Format("{0}/{1}", Application.streamingAssetsPath, BundleName);
-            var bundle = AssetBundle.LoadFromFile(path);
-            if (bundle == null)
+            var languageName = GetLanguageName(ref index);
+            using (var request = new LocLoadRequest(SetLocalizationSuccessHandler, SetLocalizationErrorHandler))
             {
-                Debug.LogErrorFormat("{0} Could not find bundle at path {1}", LogHeader, path);
-                return;
+                request.Get(index, languageName);
             }
-
-            // Get localization data from bundle
-            var keys = bundle.LoadAsset<LocKeys>(KeysName);
-            if (keys != null)
+        }
+        
+        public static IEnumerator SetLocalizationAsync(int index)
+        {
+            var languageName = GetLanguageName(ref index);
+            using (var request = new LocLoadRequest(SetLocalizationSuccessHandler, SetLocalizationErrorHandler))
             {
-                // Make sure id is not null, attempt to revert to default if it is (first run)
-                if (index < 0) index = _settings.GetDefaultLanguage(Application.systemLanguage);
-
-                // Validate id index
-                if (index >= 0 && index < _settings.Languages.Length)
-                {
-                    // Read localization from bundle
-                    var languageName = _settings.Languages[index];
-                    var language = bundle.LoadAsset<LocLanguage>(languageName);
-                    if (language != null)
-                    {
-                        // Load strings from language
-                        _strings = CreateDictionary(keys.Strings, language.Strings);
-
-                        // Flag LocManager as initialized
-                        _loadedLoc = index;
-                        _isInitialized = true;
-
-                        // Save current setting
-                        PlayerPrefs.SetInt(LastLocPrefKey, index);
-
-                        // Trigger events
-                        if (OnLocChanged != null) OnLocChanged();
-                    }
-                }
-                else
-                {
-                    Debug.LogErrorFormat("{0} Could not load localization, index out of range: {1}", LogHeader, index);
-                }
+                yield return request.GetAsync(index, languageName);
             }
-            else
-            {
-                Debug.LogErrorFormat("{0} Could not find keys asset in bundle", LogHeader);
-            }
+        }
+        
+        private static void SetLocalizationSuccessHandler (int index, LocKeys locKeys, LocLanguage language) 
+        {
+            _strings = CreateDictionary(locKeys.Strings, language.Strings);
+            _loadedLoc = index;
+            PlayerPrefs.SetInt(LastLocPrefKey, index);
                 
-            // Always unload bundle when done
-            bundle.Unload(true);
+            _isInitialized = true;
+            if (OnLocChanged != null) OnLocChanged();
+        }
+
+        private static void SetLocalizationErrorHandler(LocLoadRequest.ErrorCode error)
+        {
+            Debug.LogErrorFormat("{0} Failed to set localization: {1}", LogHeader, error);
+        }
+
+        private static string GetLanguageName(ref int index)
+        {
+            var settings = Resources.Load<LocSettings>(SettingsName);
+
+            // Validate language index, use default if out of range
+            if (index < 0 || index >= settings.Languages.Length)
+            {
+                var newIndex = settings.GetDefaultLanguage(Application.systemLanguage);
+                Debug.LogFormat("{0} selected language index is out of range ({1}) using default: {2}", LogHeader,
+                    index, newIndex);
+                index = newIndex;
+            }
+
+            // Get name and unload settings when done
+            var name = settings.Languages[index];
+            Resources.UnloadAsset(settings);
+            return name;
         }
 
         private static Dictionary<T1, T2> CreateDictionary<T1, T2>(IList<T1> keys, IList<T2> values)
