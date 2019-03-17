@@ -233,24 +233,18 @@ namespace Polyglot.Editor
     [CustomPropertyDrawer(typeof(KeySearchAttribute))]
     public class StringSearchDrawer : PropertyDrawer
     {
-        private static readonly Color _missing = new Color(1, 0.55f, 0.5f);
+        private static readonly Color Missing = new Color(1, 0.55f, 0.5f);
         private bool _requireRefresh = true;
         private bool _found;
         
         private static bool RefreshFoundState(string value)
         {
             // If string is null, it's not set
-            if (string.IsNullOrEmpty(value)) return false;
-
-            // Load bundle
-            var path = string.Format("{0}/{1}", Application.streamingAssetsPath, LocManager.BundleName);
-            var bundle = AssetBundle.LoadFromFile(path);
-            if (bundle == null) return false;
+            if (string.IsNullOrEmpty(value)) return false;;
             
-            // Check keys for value
-            var keys = bundle.LoadAsset<LocKeys>(LocManager.KeysName).Strings;
-            bundle.Unload(true);
-            return keys.Contains(value);
+            var path = LocEditorTools.GetAssetPath(LocManager.KeysName);
+            var keys = AssetDatabase.LoadAssetAtPath<LocKeys>(path);
+            return keys != null && keys.Strings.Contains(value);
         }
         
         public override void OnGUI(Rect position, SerializedProperty key, GUIContent label)
@@ -268,25 +262,16 @@ namespace Polyglot.Editor
             
             // Change color of selection is missing
             var previousColor = GUI.backgroundColor;
-            if (!_found) GUI.backgroundColor = _missing;
+            if (!_found) GUI.backgroundColor = Missing;
             
             // Draw dropdown
             if (GUI.Button(position, key.stringValue, EditorStyles.popup))
             {
-                string[] keys = null;
-
-                // Load bundle
-                var path = string.Format("{0}/{1}", Application.streamingAssetsPath, LocManager.BundleName);
-                var bundle = AssetBundle.LoadFromFile(path);
-                if (bundle != null)
-                {
-                    // Get keys
-                    keys = bundle.LoadAsset<LocKeys>(LocManager.KeysName).Strings;
-                    bundle.Unload(true);
-                }
+                var path = LocEditorTools.GetAssetPath(LocManager.KeysName);
+                var keys = AssetDatabase.LoadAssetAtPath<LocKeys>(path);
 
                 // Show popup
-                var popup = new KeySearchPopup(key.stringValue, keys, selection =>
+                var popup = new KeySearchPopup(key.stringValue, keys.Strings, selection =>
                 {
                     key.stringValue = selection;
                     key.serializedObject.ApplyModifiedProperties();
