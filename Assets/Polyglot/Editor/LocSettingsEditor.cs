@@ -37,20 +37,6 @@ namespace Polyglot.Editor
             }
         }
 
-        private static void RefreshLocalization()
-        {
-            // Refresh each component
-            var components = Resources.FindObjectsOfTypeAll<LocComponent>();
-            foreach (var component in components)
-            {
-                component.RefreshLocalization();
-                EditorUtility.SetDirty(component);
-            }
-
-            // Force repaint
-            SceneView.RepaintAll();
-        }
-
         private class Languages
         {
             private static bool _expand = true;
@@ -86,8 +72,7 @@ namespace Polyglot.Editor
                     if (GUILayout.Toggle(selected, "Preview", EditorStyles.miniButton, GUILayout.ExpandWidth(false)) &&
                         !selected)
                     {
-                        LocManager.SetLocalization(i);
-                        RefreshLocalization();
+                        LocEditorTools.LoadPreview(i);
                     }
 
                     EditorGUILayout.EndHorizontal();

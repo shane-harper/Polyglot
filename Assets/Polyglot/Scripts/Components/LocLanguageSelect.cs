@@ -20,7 +20,6 @@ namespace Polyglot
 
         [Tooltip("Dropdown to control selected localization")]
         [SerializeField] private Dropdown _target;
-        [SerializeField] private bool _useAsync = true;
 
         #endregion
 
@@ -64,8 +63,8 @@ namespace Polyglot
 
         private void SetLocalization(int index)
         {
-            if (_useAsync && gameObject.activeInHierarchy) StartCoroutine(LocManager.SetLocalizationAsync(index));
-            else LocManager.SetLocalization(index);
+            if (gameObject.activeInHierarchy) 
+                StartCoroutine(LocManager.LoadLocalizationAsync(index));
         }
 
         private void OnValidate()

@@ -23,15 +23,6 @@ namespace Polyglot.Editor
         private const string StreamingAssetsFolder = "Assets/StreamingAssets";
         
         /// <summary>
-        ///     Rebuild streaming assets for current build target
-        /// </summary>
-        [MenuItem(Menu + "/Build Streaming Assets", false, 3)]
-        public static void BuildStreamingAssets()
-        {
-            BuildStreamingAssets(EditorUserBuildSettings.activeBuildTarget);
-        }
-
-        /// <summary>
         ///     Selects the settings file in the inspector
         /// </summary>
         [MenuItem(Menu + "/Show Settings", false, 102)]
@@ -45,6 +36,16 @@ namespace Polyglot.Editor
         private static bool ValidateShowSettings()
         {
             return Resources.Load<LocSettings>(LocManager.SettingsName);
+        }
+        
+        #if !POLYGLOT_ADDRESSABLES
+        /// <summary>
+        ///     Rebuild streaming assets for current build target
+        /// </summary>
+        [MenuItem(Menu + "/Build Streaming Assets", false, 3)]
+        public static void BuildStreamingAssets()
+        {
+            BuildStreamingAssets(EditorUserBuildSettings.activeBuildTarget);
         }
 
         /// <summary>
@@ -88,6 +89,7 @@ namespace Polyglot.Editor
                 BuildAssetBundleOptions.ChunkBasedCompression, buildTarget);
             AssetDatabase.ImportAsset(path);
         }
+        #endif
 
         /// <summary>
         ///     Returns the project path to a localization asset
@@ -138,6 +140,40 @@ namespace Polyglot.Editor
             for (var i = 0; i < length; ++i)
                 result[i] = array.GetArrayElementAtIndex(i);
             return result;
+        }
+
+        public static void LoadPreview(int languageIndex)
+        {
+            // Validate language index and get language name
+            var settings = Resources.Load<LocSettings>(LocManager.SettingsName);
+            languageIndex = Mathf.Clamp(languageIndex, 0, settings.Languages.Length - 1);
+            var languageName = settings.Languages[languageIndex];
+            if (Selection.activeObject != settings) Resources.UnloadAsset(settings);
+            
+            var keysPath = GetAssetPath(LocManager.KeysName);
+            var keys = AssetDatabase.LoadAssetAtPath<LocKeys>(keysPath).Strings;
+            var languagePath = GetAssetPath(languageName);
+            var values = AssetDatabase.LoadAssetAtPath<LocLanguage>(languagePath).Strings;
+                        
+            var strings = LocManager.CreateDictionary(keys, values);
+            LocManager.SetEditorPreview(languageIndex, strings);
+                        
+            // Refresh each component
+            var components = Resources.FindObjectsOfTypeAll<LocComponent>();
+            foreach (var component in components)
+            {
+                component.RefreshLocalization();
+                EditorUtility.SetDirty(component);
+            }
+
+            // Force repaint
+            SceneView.RepaintAll();
+        }
+
+        [UnityEditor.Callbacks.DidReloadScripts]
+        private static void OnScriptsReloaded()
+        {
+            LoadPreview(LocManager.LastLoc);
         }
     }
 

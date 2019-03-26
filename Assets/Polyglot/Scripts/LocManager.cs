@@ -34,43 +34,33 @@ namespace Polyglot
             get { return _loadedLoc; }
         }
 
-        private static bool _isInitialized;
+        public static int LastLoc
+        {
+            get { return PlayerPrefs.GetInt(LastLocPrefKey, -1); }
+            private set { PlayerPrefs.SetInt(LastLocPrefKey, value); }
+        }
+        
         private static int _loadedLoc = -1;
-
         private static Dictionary<string, string> _strings;
 
         /// <summary>
         ///     Returns true if the LocManager has already been initialized
         /// </summary>
-        public static bool IsInitialized
+        public static bool IsInitialized { get; private set; }
+
+        /// <summary>
+        ///     Load localization to last set language index Async
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerator LoadLocalizationAsync()
         {
-            get
-            {
-                #if UNITY_EDITOR
-                if (!Application.isPlaying && !_isInitialized) Initialize();
-                #endif
-                return _isInitialized;
-            }
+            return LoadLocalizationAsync(LastLoc);
         }
         
-        public static void Initialize()
-        {
-            if (_isInitialized) return;
-
-            var index = PlayerPrefs.GetInt(LastLocPrefKey, -1);
-            SetLocalization(index);
-        }
-
-        public static void SetLocalization(int index)
-        {
-            var languageName = GetLanguageName(ref index);
-            using (var request = new LocLoadRequest(SetLocalizationSuccessHandler, SetLocalizationErrorHandler))
-            {
-                request.Get(index, languageName);
-            }
-        }
-        
-        public static IEnumerator SetLocalizationAsync(int index)
+        /// <summary>
+        ///     Load localization language index Async
+        /// </summary>
+        public static IEnumerator LoadLocalizationAsync(int index)
         {
             var languageName = GetLanguageName(ref index);
             using (var request = new LocLoadRequest(SetLocalizationSuccessHandler, SetLocalizationErrorHandler))
@@ -79,13 +69,13 @@ namespace Polyglot
             }
         }
         
-        private static void SetLocalizationSuccessHandler (int index, LocKeys locKeys, LocLanguage language) 
+        private static void SetLocalizationSuccessHandler(int index, LocKeys locKeys, LocLanguage language) 
         {
             _strings = CreateDictionary(locKeys.Strings, language.Strings);
             _loadedLoc = index;
-            PlayerPrefs.SetInt(LastLocPrefKey, index);
+            LastLoc = index;
                 
-            _isInitialized = true;
+            IsInitialized = true;
             if (OnLocChanged != null) OnLocChanged();
         }
 
@@ -113,7 +103,7 @@ namespace Polyglot
             return name;
         }
 
-        private static Dictionary<T1, T2> CreateDictionary<T1, T2>(IList<T1> keys, IList<T2> values)
+        public static Dictionary<T1, T2> CreateDictionary<T1, T2>(IList<T1> keys, IList<T2> values)
         {
             // Create dictionary
             var length = Mathf.Min(keys.Count, values.Count);
@@ -141,7 +131,23 @@ namespace Polyglot
         public static bool TryGetString(string key, out string value)
         {
             if (IsInitialized) return _strings.TryGetValue(key, out value);
-            throw new Exception(LogHeader + " Loc Manager not initialized");
+            if (Application.isPlaying) throw new Exception(LogHeader + " Loc Manager not initialized");
+            
+            value = null;
+            return false;
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        ///     (Editor Only) Method to set preview data. Use SetLocalization in application
+        /// </summary>
+        public static void SetEditorPreview(int index, Dictionary<string, string> strings)
+        {
+            _loadedLoc = index;
+            _strings = strings;
+            IsInitialized = true;
+            LastLoc = index;
+        }
+#endif
     }
 }

@@ -9,7 +9,7 @@ public class PolyglotExample : MonoBehaviour
     private void Awake()
     {
         // Initialize the LocManager at the start
-        LocManager.Initialize();
+        StartCoroutine(LocManager.LoadLocalizationAsync());
     }
     
     public void CloseApp()

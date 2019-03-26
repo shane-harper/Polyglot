@@ -99,9 +99,10 @@ namespace Polyglot.Editor
                 var language = LocEditorTools.CreateScriptableObject<LocLanguage>(languagePath);
                 CopyListToSerializedProperty(values[i], language, "_strings");
             }
-            progress = maxLanguageProgress;
             
             // Rebuild asset bundles
+            #if !POLYGLOT_ADDRESSABLES
+            progress = maxLanguageProgress;
             var buildTarget = EditorUserBuildSettings.activeBuildTarget;
             var message = string.Format(
                     "Localization data import complete! Would you like to rebuild Polyglot asset bundles?\n\n({0})",
@@ -111,6 +112,7 @@ namespace Polyglot.Editor
                 EditorUtility.DisplayProgressBar(progressBarTitle, "Rebuilding asset bundles...", progress);
                 LocEditorTools.BuildStreamingAssets(buildTarget);
             }
+            #endif
 
             // Clear progress bar
             EditorUtility.ClearProgressBar();
