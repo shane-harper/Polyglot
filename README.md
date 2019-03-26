@@ -14,6 +14,7 @@ Features
 - Default localization selection
 - Preview localization in editor
 - Saving of last setting between sessions (PlayerPrefs)
+- Basic Addressables Support
 
 Known Issues
 --------
@@ -34,8 +35,16 @@ Usage
 2. Export localization CSV
 3. Import CSV to project in Unity (Edit > Polyglot > Import Data...)
 4. Set default localizations in Polyglot settings (Edit > Polyglot > Show Settings)
+
+For Asset Bundles:
 5. Rebuild streaming assets (Edit > Polyglot > Build Streaming Assets)
-6. Initialize Polyglot on app start. `Polyglot.LocManager.Initialize();`
+
+For Addressables:
+5. Add 'POLYGLOT_ADDRESSABLES' to Scripting Define Symbols in Player Settings
+6. Convert legacy asset bundles by accepting popup when opening Addressables window
+7. Simplify entry names for language assets
+
+Finally. Initialize Polyglot on app start. `StartCoroutine(Polyglot.LocManager.Initialize());`
 
 Contributors
 ------------
